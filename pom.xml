@@ -1,0 +1,115 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>JungApp</groupId>
+  <artifactId>JungApp</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>JungApp</name>
+  <description>App for JUNG tests</description>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+  	<dependency>
+  		<groupId>net.sf.jung</groupId>
+  		<artifactId>jung-api</artifactId>
+  		<version>2.1.1</version>
+  	</dependency>
+  	<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-visualization -->
+<dependency>
+    <groupId>net.sf.jung</groupId>
+    <artifactId>jung-visualization</artifactId>
+    <version>2.1.1</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-graph-impl -->
+<dependency>
+    <groupId>net.sf.jung</groupId>
+    <artifactId>jung-graph-impl</artifactId>
+    <version>2.1.1</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-algorithms -->
+<dependency>
+    <groupId>net.sf.jung</groupId>
+    <artifactId>jung-algorithms</artifactId>
+    <version>2.1.1</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-io -->
+<dependency>
+    <groupId>net.sf.jung</groupId>
+    <artifactId>jung-io</artifactId>
+    <version>2.1.1</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm-embedded-driver -->
+<dependency>
+    <groupId>org.neo4j</groupId>
+    <artifactId>neo4j-ogm-embedded-driver</artifactId>
+    <version>3.1.0</version>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm -->
+<dependency>
+    <groupId>org.neo4j</groupId>
+    <artifactId>neo4j-ogm</artifactId>
+    <version>3.1.0</version>
+    <type>pom</type>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-collections4</artifactId>
+    <version>4.1</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-common -->
+<dependency>
+    <groupId>org.neo4j</groupId>
+    <artifactId>neo4j-common</artifactId>
+    <version>3.3.3</version>
+    <scope>test</scope>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-community -->
+<dependency>
+    <groupId>org.neo4j</groupId>
+    <artifactId>neo4j-community</artifactId>
+    <version>3.3.3</version>
+    <type>pom</type>
+</dependency>
+
+
+<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+<dependency>
+    <groupId>commons-io</groupId>
+    <artifactId>commons-io</artifactId>
+    <version>2.6</version>
+</dependency>
+
+
+<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-samples -->
+<dependency>
+    <groupId>net.sf.jung</groupId>
+    <artifactId>jung-samples</artifactId>
+    <version>2.1.1</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver -->
+<dependency>
+    <groupId>org.neo4j.driver</groupId>
+    <artifactId>neo4j-java-driver</artifactId>
+    <version>1.5.1</version>
+</dependency>
+
+
+
+  </dependencies>
+</project>
