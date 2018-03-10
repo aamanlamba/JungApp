@@ -8,10 +8,11 @@ public class PersonVertex extends RootNode implements NodeInfo {
 	protected String personName;
 	protected int born;
 	
+	@Override
 	public String getName() {
 		return personName;
 	}
-
+	@Override
 	public void setName(String name) {
 		this.personName = name;
 	}
@@ -29,11 +30,16 @@ public class PersonVertex extends RootNode implements NodeInfo {
 		personName="";
 		born=0;
 	}
-	public PersonVertex(String sourceNode, int born) {
-		super(sourceNode,sourceNode);
+	public PersonVertex(String sourceNode, int born,String type) {
+		super(sourceNode,sourceNode,type);
 		this.personName = sourceNode;
 		this.born = born;
 	}
+	@Override 
+	public String getType() {
+		return super.getType();
+	}
+	
 	@Override
 	public String toString() {
 		return this.personName;

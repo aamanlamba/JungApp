@@ -16,11 +16,15 @@ public class MovieVertex extends RootNode implements NodeInfo {
 		released="";
 	}
 
-	public MovieVertex(String targetNode, String tagline2, String released2) {
-		super(targetNode,targetNode);
+	public MovieVertex(String targetNode, String tagline2, String released2,String type) {
+		super(targetNode,targetNode,type);
 		title = targetNode;
 		tagline = tagline2;
 		released = released2;
+	}
+	@Override 
+	public String getType() {
+		return super.getType();
 	}
 	@Override
 	public String toString() {

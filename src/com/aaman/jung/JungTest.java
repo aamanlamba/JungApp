@@ -1,8 +1,10 @@
 package com.aaman.jung;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
+import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
 import edu.uci.ics.jung.algorithms.layout.SpringLayout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
@@ -35,8 +38,13 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.ogm.model.Result;
 
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import static org.neo4j.driver.v1.Values.parameters;
 
 
@@ -46,11 +54,13 @@ public class JungTest implements AutoCloseable {
     private final ObjectMapper objectMapper;
     private final GraphDatabaseFactory dbFactory;
 	
+	
 	public JungTest(String uri,String user, String password) {
         driver = GraphDatabase.driver( uri, AuthTokens.basic( user, password ) );
         objectMapper = new ObjectMapper();
         dbFactory = new GraphDatabaseFactory();
-       
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
 	}
 	
 	@Override
@@ -114,13 +124,14 @@ public class JungTest implements AutoCloseable {
 		        	  Record record = result.next();
 		        	  String targetNode = record.get(1).get("title").toString();
 		        	  String sourceNode = record.get(0).get("name").toString();
+		        	  
 		        	  String tagline = record.get(1).get("tagline").toString();
 		        	  String released = record.get(1).get("released").toString();
 		        	  int born = record.get(0).get("born").asInt();
 		        	  String rel = sourceNode + "-ACTED_IN-"+ targetNode;
 		        	  
-		        	 MovieVertex mv = new MovieVertex(targetNode,tagline,released);
-		        	 PersonVertex pv = new PersonVertex(sourceNode,born);
+		        	 MovieVertex mv = new MovieVertex(targetNode,tagline,released,"Movie");
+		        	 PersonVertex pv = new PersonVertex(sourceNode,born,"Person");
 		        	  g.addVertex(pv);
 		        	  
 		        	  g.addVertex(mv);
@@ -162,7 +173,7 @@ private void getNodesEdges(String cql2) {
 
 }
 
-private void renderGraph(DirectedSparseGraph<NodeInfo, String> g) {
+private void renderGraph(DirectedSparseGraph<NodeInfo, String> g) throws JsonProcessingException {
 	  //SpringLayout<String, String> layout = new SpringLayout<String,String>(g);
 	//  layout.setForceMultiplier(0.75);
 	  //layout.setRepulsionRange(100);
@@ -172,11 +183,29 @@ private void renderGraph(DirectedSparseGraph<NodeInfo, String> g) {
 	 // layout.setAttractionMultiplier(0.75); // default 0.75
 	  //layout.setRepulsionMultiplier(0.5); // default 0.75
 	ISOMLayout<NodeInfo,String> layout = new ISOMLayout<NodeInfo,String>(g);
-	  
+	Dimension viewerDim = new Dimension(800,800);
+	Rectangle viewerRect = new Rectangle(viewerDim);
     VisualizationViewer<NodeInfo,String> vv =
-      new VisualizationViewer<NodeInfo,String>(layout, new Dimension(800,800));
-    	
-    vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
+      new VisualizationViewer<NodeInfo,String>(layout, viewerDim);
+    GraphElementAccessor<NodeInfo, String> pickSupport = 
+            vv.getPickSupport();
+        Collection<NodeInfo> vertices = 
+            pickSupport.getVertices(layout, viewerRect);
+        
+        
+        //iterate and print vertices
+        for (NodeInfo vertex: vertices) {
+        		System.out.println(vertex.toString()+"-->"+vertex.getType());
+        		System.out.println(layout.getX(vertex)+"--"+layout.getY(vertex));
+        		//print JSON version of vertex
+        		System.out.println(objectMapper.writeValueAsString(vertex));
+        }
+        //print vertices collection as JSON array
+        String verticesJSON = objectMapper.writeValueAsString(vertices);
+        System.out.println(verticesJSON);
+        //TODO: print coordinates and vertices as JSON array
+        
+        vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
 
       /*vv.getRenderContext().setEdgeLabelTransformer(new Transformer<NodeInfo,String>()  {
 
