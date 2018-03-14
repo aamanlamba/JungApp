@@ -2,12 +2,16 @@ package com.aaman.jung;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.JFrame;
 import edu.uci.ics.jung.algorithms.layout.CircleLayout;
@@ -26,6 +30,8 @@ import edu.uci.ics.jung.visualization.renderers.Renderer.Vertex;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 
 import org.apache.commons.collections4.Transformer;
+import org.freehep.graphics2d.VectorGraphics;
+import org.freehep.graphicsio.svg.SVGGraphics2D;
 import org.neo4j.driver.v1.AuthTokens;
 import org.neo4j.driver.v1.Driver;
 import org.neo4j.driver.v1.GraphDatabase;
@@ -47,19 +53,20 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 import static org.neo4j.driver.v1.Values.parameters;
 
-
+@SuppressWarnings("unused")
 public class JungTest implements AutoCloseable {
 
 	private final Driver driver;
     private final ObjectMapper objectMapper;
     private final GraphDatabaseFactory dbFactory;
-	
+	private final DirectedSparseGraph<NodeInfo,String> graph;
 	
 	public JungTest(String uri,String user, String password) {
         driver = GraphDatabase.driver( uri, AuthTokens.basic( user, password ) );
         objectMapper = new ObjectMapper();
         dbFactory = new GraphDatabaseFactory();
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+   	 	graph = new DirectedSparseGraph<NodeInfo, String>();
 
 	}
 	
@@ -115,43 +122,50 @@ public class JungTest implements AutoCloseable {
       }
 	  try ( JungTest grapher = new JungTest( "bolt://localhost:7687", "", "" ) )
       {
-		  DirectedSparseGraph<NodeInfo,String> g = new DirectedSparseGraph<NodeInfo, String>();
-		  List<Map<String, Object>> nodes = grapher.read(cql);
-		  
-		   try (Session session = grapher.driver.session()){
-		         StatementResult result = session.run(cql2);
-		        	while (result.hasNext()) {
-		        	  Record record = result.next();
-		        	  String targetNode = record.get(1).get("title").toString();
-		        	  String sourceNode = record.get(0).get("name").toString();
-		        	  
-		        	  String tagline = record.get(1).get("tagline").toString();
-		        	  String released = record.get(1).get("released").toString();
-		        	  int born = record.get(0).get("born").asInt();
-		        	  String rel = sourceNode + "-ACTED_IN-"+ targetNode;
-		        	  
-		        	 MovieVertex mv = new MovieVertex(targetNode,tagline,released,"Movie");
-		        	 PersonVertex pv = new PersonVertex(sourceNode,born,"Person");
-		        	  g.addVertex(pv);
-		        	  
-		        	  g.addVertex(mv);
-		        	  g.addEdge(rel, pv, mv);
-		        	  
-		        } 
-		    }		  
-		/*  for (Map<String, Object> map : nodes) {
-			    for (Map.Entry<String, Object> entry : map.entrySet()) {
-			        String key = entry.getKey();
-			        g.addVertex(key);
-			       // Object value = entry.getValue();
-			    }
-			}*/
-		  //   g.addEdge("Edge1", "Vertex1", "Vertex2");
-		  // g.addEdge("Edge2", "Vertex1", "Vertex3");
-	    //g.addEdge("Edge3", "Vertex3", "Vertex1");
-		  grapher.renderGraph(g);
+		  grapher.generateGraph(cql, cql2, grapher);
       }
 }
+
+private  void generateGraph(final String cql, final String cql2, JungTest grapher)
+		throws IOException {
+	
+	  List<Map<String, Object>> nodes = grapher.read(cql);
+	  
+	   try (Session session = grapher.driver.session()){
+	         StatementResult result = session.run(cql2);
+	        	while (result.hasNext()) {
+	        	  Record record = result.next();
+	        	  String targetNode = record.get(1).get("title").toString();
+	        	  String sourceNode = record.get(0).get("name").toString();
+	        	  
+	        	  String tagline = record.get(1).get("tagline").toString();
+	        	  String released = record.get(1).get("released").toString();
+	        	  int born = record.get(0).get("born").asInt();
+	        	  String rel = sourceNode + "-ACTED_IN-"+ targetNode;
+	        	  
+	        	 MovieVertex mv = new MovieVertex(targetNode,tagline,released,"Movie");
+	        	 PersonVertex pv = new PersonVertex(sourceNode,born,"Person");
+	        	  graph.addVertex(pv);
+	        	  
+	        	  graph.addVertex(mv);
+	        	  graph.addEdge(rel, pv, mv);
+	        	  
+	        } 
+	    }		
+		  grapher.renderGraph(graph);
+	/*  for (Map<String, Object> map : nodes) {
+		    for (Map.Entry<String, Object> entry : map.entrySet()) {
+		        String key = entry.getKey();
+		        g.addVertex(key);
+		       // Object value = entry.getValue();
+		    }
+		}*/
+	  //   g.addEdge("Edge1", "Vertex1", "Vertex2");
+	  // g.addEdge("Edge2", "Vertex1", "Vertex3");
+	//g.addEdge("Edge3", "Vertex3", "Vertex1");
+
+}
+
 
 private void getNodesEdges(String cql2) {
 	// TODO Auto-generated method stub
@@ -173,7 +187,7 @@ private void getNodesEdges(String cql2) {
 
 }
 
-private void renderGraph(DirectedSparseGraph<NodeInfo, String> g) throws JsonProcessingException {
+private void renderGraph(DirectedSparseGraph<NodeInfo, String> g) throws IOException {
 	  //SpringLayout<String, String> layout = new SpringLayout<String,String>(g);
 	//  layout.setForceMultiplier(0.75);
 	  //layout.setRepulsionRange(100);
@@ -227,6 +241,27 @@ private void renderGraph(DirectedSparseGraph<NodeInfo, String> g) throws JsonPro
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.pack();
     frame.setVisible(true);
+    
+    // create svg from Visualization
+    Properties p = new Properties(); 
+    p.setProperty("PageSize","A5"); 
+    File svgOutput = new File("/Users/aamanlamba/Downloads/Output.svg");
+    if(svgOutput.exists())
+    		svgOutput.delete();
+    VectorGraphics vg = new SVGGraphics2D(svgOutput,
+    			viewerDim);
+    vg.setProperties(p); 
+    vg.startExport(); 
+    vv.print(vg); 
+    vg.endExport();
+    FileInputStream fis = new FileInputStream(svgOutput);
+
+	int oneByte;
+	while ((oneByte = fis.read()) != -1) {
+		System.out.write(oneByte);
+		// System.out.print((char)oneByte); // could also do this
+	}
+	System.out.flush();
   }
 	
 }
