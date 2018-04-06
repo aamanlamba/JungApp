@@ -5,51 +5,46 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>JungApp</name>
   <description>App for JUNG tests</description>
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <properties>
+    <version.slf4j>1.7.25</version.slf4j>
+    <version.logback>1.2.3</version.logback>
+  </properties>
   <dependencies>
-  	<dependency>
-  		<groupId>net.sf.jung</groupId>
-  		<artifactId>jung-api</artifactId>
-  		<version>2.1.1</version>
-  	</dependency>
-  	<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-visualization -->
-<dependency>
-    <groupId>net.sf.jung</groupId>
-    <artifactId>jung-visualization</artifactId>
-    <version>2.1.1</version>
-</dependency>
-<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-graph-impl -->
-<dependency>
-    <groupId>net.sf.jung</groupId>
-    <artifactId>jung-graph-impl</artifactId>
-    <version>2.1.1</version>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-algorithms -->
-<dependency>
-    <groupId>net.sf.jung</groupId>
-    <artifactId>jung-algorithms</artifactId>
-    <version>2.1.1</version>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-io -->
-<dependency>
-    <groupId>net.sf.jung</groupId>
-    <artifactId>jung-io</artifactId>
-    <version>2.1.1</version>
-</dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${version.logback}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${version.logback}</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jung</groupId>
+      <artifactId>jung-api</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jung</groupId>
+      <artifactId>jung-visualization</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jung</groupId>
+      <artifactId>jung-graph-impl</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jung</groupId>
+      <artifactId>jung-algorithms</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.jung</groupId>
+      <artifactId>jung-io</artifactId>
+      <version>2.1.1</version>
+    </dependency>
 <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-ogm-embedded-driver -->
 <dependency>
     <groupId>org.neo4j</groupId>
@@ -65,12 +60,6 @@
     <type>pom</type>
 </dependency>
 
-<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
-<dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-collections4</artifactId>
-    <version>4.1</version>
-</dependency>
 <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-common -->
 <dependency>
     <groupId>org.neo4j</groupId>
@@ -88,20 +77,7 @@
 </dependency>
 
 
-<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-<dependency>
-    <groupId>commons-io</groupId>
-    <artifactId>commons-io</artifactId>
-    <version>2.6</version>
-</dependency>
 
-
-<!-- https://mvnrepository.com/artifact/net.sf.jung/jung-samples -->
-<dependency>
-    <groupId>net.sf.jung</groupId>
-    <artifactId>jung-samples</artifactId>
-    <version>2.1.1</version>
-</dependency>
 <!-- https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver -->
 <dependency>
     <groupId>org.neo4j.driver</groupId>
@@ -140,49 +116,6 @@
 </dependency>
 
 
-
-<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-dom -->
-<dependency>
-    <groupId>org.apache.xmlgraphics</groupId>
-    <artifactId>batik-dom</artifactId>
-    <version>1.9.1</version>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-svggen -->
-<dependency>
-    <groupId>org.apache.xmlgraphics</groupId>
-    <artifactId>batik-svggen</artifactId>
-    <version>1.9.1</version>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder -->
-<dependency>
-    <groupId>org.apache.xmlgraphics</groupId>
-    <artifactId>batik-transcoder</artifactId>
-    <version>1.9.1</version>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-util -->
-<dependency>
-    <groupId>org.apache.xmlgraphics</groupId>
-    <artifactId>batik-util</artifactId>
-    <version>1.9.1</version>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/xmlgraphics-commons -->
-<dependency>
-    <groupId>org.apache.xmlgraphics</groupId>
-    <artifactId>xmlgraphics-commons</artifactId>
-    <version>2.2</version>
-</dependency>
-
-<!-- https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-svg-dom -->
-<dependency>
-    <groupId>org.apache.xmlgraphics</groupId>
-    <artifactId>batik-svg-dom</artifactId>
-    <version>1.9.1</version>
-</dependency>
-
 <!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-jdbc-driver -->
 <dependency>
     <groupId>org.neo4j</groupId>
@@ -190,7 +123,57 @@
     <version>3.3.0</version>
 </dependency>
 
+<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+<dependency>
+    <groupId>com.google.guava</groupId>
+    <artifactId>guava</artifactId>
+    <version>24.1-jre</version>
+</dependency>
+
 
 
   </dependencies>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+      <!-- copy output jar to target directory -->
+      <plugin>
+    <groupId>com.github.goldin</groupId>
+    <artifactId>copy-maven-plugin</artifactId>
+    <version>0.2.5</version>
+    <executions>
+        <execution>
+            <id>deploy-to-local-directory</id>
+            <phase>install</phase>
+            <goals>
+                <goal>copy</goal>
+            </goals>
+            <configuration>
+                <skipIdentical>false</skipIdentical>
+                <failIfNotFound>false</failIfNotFound>
+                <resources>
+                    <resource>
+                        <description>Copy artifact to another directory</description>
+                        <targetPath>/Users/aamanlamba/Library/Application Support/Neo4j Desktop/Application/neo4jDatabases/database-6d802e47-4fd2-42c0-8b88-723bd6cf32f7/installation-3.3.0/plugins</targetPath>
+                        <directory>${project.build.directory}</directory>
+                        <includes>
+                            <include>*.jar</include>
+                        </includes>
+                    </resource>
+                </resources>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+    </plugins>
+  </build>
+  
 </project>

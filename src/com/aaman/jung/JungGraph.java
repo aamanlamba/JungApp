@@ -13,13 +13,14 @@ import java.sql.Connection;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JFrame;
 
-import org.apache.batik.dom.GenericDOMImplementation;
 
 import org.freehep.graphics2d.VectorGraphics;
 import org.freehep.graphicsio.svg.SVGGraphics2D;
@@ -27,12 +28,17 @@ import org.freehep.graphicsio.svg.SVGGraphics2D;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import edu.uci.ics.jung.algorithms.layout.DAGLayout;
+import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
+import edu.uci.ics.jung.algorithms.layout.SpringLayout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.DefaultModalGraphMouse;
@@ -63,7 +69,69 @@ public class JungGraph {
 		return renderSVGGraph(loadJungGraph(cql, uri, user, password));
 			
 	}
+	
+	public String getJungJSONGraph(List<Node> nodes, List<Relationship> rels) {
+		String resultJSON = "";
+		
+		return resultJSON;
+		
+	}
+	
 
+	/**
+	 * Function to load a JUNG graph object with values from Neo4J
+	 * @param cql
+	 * @param uri
+	 * @param user
+	 * @param password
+	 * 
+	 * @throws SQLException
+	 */
+	private DirectedSparseGraph<NodeInfo,String> loadJungGraph2(final String cql, 
+			final String uri, final String user, final String password) throws SQLException {
+		
+		DirectedSparseGraph<NodeInfo,String> graph = new DirectedSparseGraph<>();
+		QueryResults qr = executeNeo4JQuery(cql, uri, user, password);
+		return graph;
+	}
+
+
+	/**
+	 * @param cql
+	 * @param uri
+	 * @param user
+	 * @param password
+	 * @param graph
+	 * @throws SQLException
+	 */
+	private QueryResults executeNeo4JQuery(final String cql, final String uri, 
+				final String user, final String password) throws SQLException {
+		QueryResults qr = new QueryResults();
+		ArrayList<Node> nodes = new ArrayList<>();
+		
+		try(Connection con= DriverManager.getConnection(uri, user, password)){
+			try (Statement stmt = con.createStatement()){
+				 try (ResultSet rs = stmt.executeQuery(cql)) {
+			            while (rs.next()) {
+			        	    		Map<String, Object> person = (Map<String, Object>) rs.getObject("person");
+			        	       		Map<String, Object> movie = (Map<String, Object>) rs.getObject("movie");
+			   			                
+
+				              	String targetNode = movie.get("title").toString();
+					        	  	String sourceNode = person.get("name").toString();
+					        	  	String tagline="";
+
+					        	  	String released = movie.get("released").toString();
+					        	  	int born =  ((Long)person.get("born")).intValue();
+					        	  	String rel = sourceNode + "-ACTED_IN-"+ targetNode;
+					     }
+			        }
+			  }
+		}
+	  	return qr;		         
+
+	}
+	
 	/**
 	 * Function to load a JUNG graph object with values from Neo4J
 	 * @param cql
@@ -146,19 +214,6 @@ public class JungGraph {
         vv.getRenderContext().setVertexLabelTransformer(new ToStringLabeller());
     
 
-	    // Get a DOMImplementation.
-	    DOMImplementation domImpl =
-	      GenericDOMImplementation.getDOMImplementation();
-	
-	    // Create an instance of org.w3c.dom.Document.
-	    String svgNS = "http://www.w3.org/2000/svg";
-	    Document document = domImpl.createDocument(svgNS, "svg", null);
-	
-	    // Create an instance of the SVG Generator.
-	    org.apache.batik.svggen.SVGGraphics2D svgGenerator = new org.apache.batik.svggen.SVGGraphics2D(document);
-	
-	    svgGenerator.setSVGCanvasSize(viewerDim);
-	    vv.print(svgGenerator);
 	    // The following code adds capability for mouse picking of vertices/edges. Vertices can even be moved!
 	    final DefaultModalGraphMouse<String,Number> graphMouse = new DefaultModalGraphMouse<>();
 	    vv.setGraphMouse(graphMouse);

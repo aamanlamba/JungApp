@@ -1,5 +1,8 @@
 package com.aaman.jung;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 public class RootNode {
 	protected String name="";
 	protected String id="";
@@ -32,4 +35,26 @@ public class RootNode {
 	protected void setType(String type) {
 		this.type = type;
 	}
+	
+	  @Override
+	    public boolean equals(Object o) {
+
+	        if (o == this) return true;
+	        if (!(o instanceof RootNode)) {
+	            return false;
+	        }
+
+	        RootNode rn = (RootNode) o;
+
+	        return new EqualsBuilder()
+	                .append(id, rn.id)
+	                .isEquals();
+	    }
+	  
+	  @Override
+	    public int hashCode() {
+	        return new HashCodeBuilder(17, 37)
+	                .append(id)
+	                .toHashCode();
+	    }
 }
